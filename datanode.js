@@ -4,7 +4,7 @@ var mkdirp = require('mkdirp');
 var dir = "./" + "dNode";
 var exists = fs.existsSync(dir);
 const myport = process.argv[2];
-
+var registered = false;
 console.log(myport);
 if(!exists){
 		console.log("Creating directory")
@@ -21,18 +21,22 @@ socket.on('connect',function(){
 	socket.write("hello");
 
 });
-	socket.on('data', function(message){
-		console.log(message);
-		socket.destroy();
-	});
-//net.createServer( function(socket){
-	
-	//Register node
-	/*socket.on('register', function(){
-		var stmt = db.prepare("INSERT INTO Nodes VALUES (?)");
-		stmt.run(socket.remoteAddress + "," + socket.remotePort);
-		client.write("Registered");
-	});*/
-//}).listen(myport);
 
+socket.on('data', function(message){
+		var text = String(message);
+		console.log(text);
+		if(text == "registered"){
+			registered = true;
+		}
+		socket.destroy();
+		if(registered){
+			net.createServer( function(socket){
+				//Wait for client socket to work
+				socket.on('data', function(message){
+					console.log("I received a message! it says " + String(message));
+				});
+
+			}).listen(myport);
+}
 console.log('Server running at http://127.0.0.1:'+myport);
+});

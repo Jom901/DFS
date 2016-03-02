@@ -22,28 +22,15 @@ db.serialize(function() {
   }
 
   
-       // var stmt = db.prepare("INSERT INTO Stuff VALUES (?)");
-  
-//Insert random data
-/*
-  var rnd;
-  for (var i = 0; i < 10; i++) {
-    rnd = Math.floor(Math.random() * 10000000);
-    stmt.run("Thing #" + rnd);
-  }
-  
-stmt.finalize();
-  db.each("SELECT rowid AS id, thing FROM Stuff", function(err, row) {
-    console.log(row.id + ": " + row.thing);
-  });
-});*/ });
+});
 
 
 var server = net.createServer( function(socket){
 	
-	//Register node
+
 
 }).listen(myport);
+//Register node
 server.on('connection',function(socket){
 		socket.on('data', function(message){
 			radds = socket.remoteAddress;
@@ -52,8 +39,9 @@ server.on('connection',function(socket){
 			roport = socket.remotePort;
 			var stmt = db.prepare("INSERT INTO Nodes VALUES (?,?)");
 			stmt.run(radds, roport);
+			console.log("Data: " + message);
 			console.log("I registered " +  radds + ":" + roport);
-			socket.write('do it');
+			socket.write("registered");
 		});
 })
 console.log('Server running at tcp://127.0.0.1:'+myport);
